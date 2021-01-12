@@ -1,6 +1,6 @@
 const request = require('supertest');
 
-describe('It works!', () => {
+describe('/api/users', () => {
     let server;
 
     beforeEach(() => {
@@ -11,10 +11,13 @@ describe('It works!', () => {
         await server.close();
     });
 
-    it('should return Hello, World!', async () => {
-        const res = await request(server).get('/');
+    describe('POST /api/users', () => {
+        it('should return 400 if name is not provided', async () => {
+            const res = await request(server)
+                .post('/api/users')
+                .send({});
 
-        expect(res.status).toBe(200);
-        expect(res.body.message).toMatch('Hello, World!');
+            expect(res.status).toBe(400);
+        });
     });
 });
