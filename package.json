@@ -4,6 +4,7 @@
   "description": "A simple project",
   "main": "src/index.js",
   "dependencies": {
+    "config": "^3.3.3",
     "express": "^4.17.1",
     "mongoose": "^5.11.11"
   },
