@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const request = require('supertest');
 
 describe('/api/users', () => {
@@ -67,6 +68,10 @@ describe('/api/users', () => {
             const res = await createUser(user);
 
             expect(res.body).toMatchObject(user);
+        });
+
+        it('should save the user if the request is valid', async () => {
+            const res = await createUser(user);
         });
     });
 });
