@@ -62,5 +62,11 @@ describe('/api/users', () => {
 
             expect(res.status).toBe(200);
         });
+
+        it('should return the user if request if valid', async () => {
+            const res = await createUser(user);
+
+            expect(res.body).toMatchObject(user);
+        });
     });
 });

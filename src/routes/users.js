@@ -6,7 +6,7 @@ const router = express.Router();
 const validateInput = validator(validateUser);
 
 router.post('/', validateInput, (req, res) => {
-    res.status(200).send();
+    res.status(200).send(req.body);
 });
 
 const schema = Joi.object({
