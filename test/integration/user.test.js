@@ -29,5 +29,11 @@ describe('/api/users', () => {
 
             expect(res.status).toBe(400);
         });
+
+        it('should return 400 if email is not provided', async () => {
+            const res = await createUser({ name: 'user' });
+
+            expect(res.status).toBe(400);
+        });
     });
 });

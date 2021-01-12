@@ -1,6 +1,7 @@
 const config = require('config');
 const express = require('express');
 const app = express();
+app.use(express.json());
 
 const home = require('./routes/home');
 const users = require('./routes/users');
