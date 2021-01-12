@@ -84,7 +84,14 @@ describe('/api/users', () => {
         it('should return the user if request is valid', async () => {
             const res = await createUser(user);
 
-            expect(res.body).toMatchObject(user);
+            expect(res.body).toHaveProperty('name', user.name);
+            expect(res.body).toHaveProperty('email', user.email);
+        });
+
+        it('should not return the user password if request is valid', async () => {
+            const res = await createUser(user);
+
+            expect(res.body).not.toHaveProperty('password');
         });
 
         it('should save the user if the request is valid', async () => {

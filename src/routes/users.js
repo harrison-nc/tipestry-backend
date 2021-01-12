@@ -8,7 +8,10 @@ const validateInput = validator(User.validate);
 router.post('/', validateInput, async (req, res) => {
     const user = await User.create(req.body);
 
-    res.status(200).send(user);
+    res.status(200).send({
+        name: user.name,
+        email: user.email,
+    });
 });
 
 module.exports = router;
