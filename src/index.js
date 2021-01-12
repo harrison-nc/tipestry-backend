@@ -1,8 +1,10 @@
 const express = require('express');
 
+const home = require('./routes/home');
+
 const app = express();
 
-app.get('/', (req, res) => res.status(200).send({ message: 'Hello, World!' }));
+app.use('/', home);
 
 const server = app.listen(3000, () => console.log('Connected to localhost:3000...'));
 
