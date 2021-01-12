@@ -35,5 +35,12 @@ describe('/api/users', () => {
 
             expect(res.status).toBe(400);
         });
+
+        it('should return 400 if password is not provided', async () => {
+            const payload = { name: 'user', email: 'user@mail.com' };
+            const res = await createUser(payload)
+
+            expect(res.status).toBe(400);
+        });
     });
 });

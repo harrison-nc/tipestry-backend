@@ -9,6 +9,8 @@ router.post('/', (req, res) => {
 
     if (!req.body.email) return res.status(400).send();
 
+    if (!req.body.password) return res.status(400).send();
+
     res.status(200).send();
 });
 
