@@ -42,5 +42,16 @@ describe('/api/users', () => {
 
             expect(res.status).toBe(400);
         });
+
+        it('should return 200 if request is valid', async () => {
+            const payload = {
+                name: 'user',
+                email: 'user@mail.com',
+                password: 'secret'
+            };
+            const res = await createUser(payload);
+
+            expect(res.status).toBe(200);
+        });
     });
 });
