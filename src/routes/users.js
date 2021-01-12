@@ -1,17 +1,23 @@
 const express = require('express');
+const Joi = require('joi');
+
 const router = express.Router();
 
 router.post('/', (req, res) => {
-    if (!req.body.name) return res.status(400).send();
-
-    let length = +req.body.name.length;
-    if (length < 4) return res.status(400).send();
-
-    if (!req.body.email) return res.status(400).send();
-
-    if (!req.body.password) return res.status(400).send();
+    const { error } = validateUser(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
     res.status(200).send();
 });
+
+const schema = Joi.object({
+    name: Joi.string().min(4).max(15).required(),
+    email: Joi.string().required(),
+    password: Joi.string().required()
+}).label('user').required();
+
+function validateUser(user) {
+    return schema.validate(user);
+}
 
 module.exports = router;
