@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const { User } = require('../../src/model/user');
+const ObjectId = require('mongoose').Types.ObjectId;
 const request = require('supertest');
 
 describe('/api/users', () => {
@@ -84,6 +85,15 @@ describe('/api/users', () => {
             const res = await createUser(user);
 
             expect(res.body).toMatchObject(user);
+        });
+
+        it('should save the user if the request is valid', async () => {
+            const res = await createUser(user);
+
+            const userInDb = await User.findOne({ name: user.name });
+
+            expect(userInDb).not.toBeNull();
+            expect(userInDb.email).toMatch(user.name);
         });
     });
 });

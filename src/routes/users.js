@@ -1,12 +1,14 @@
 const express = require('express');
+const User = require('../db/user');
 const validator = require('../middleware/validateReqParameters');
-const model = require('../model/user');
 
 const router = express.Router();
-const validateInput = validator(model.validate);
+const validateInput = validator(User.validate);
 
-router.post('/', validateInput, (req, res) => {
-    res.status(200).send(req.body);
+router.post('/', validateInput, async (req, res) => {
+    const user = await User.create(req.body);
+
+    res.status(200).send(user);
 });
 
 module.exports = router;
