@@ -2,6 +2,7 @@ const request = require('supertest');
 
 describe('/api/users', () => {
     let server;
+    let user;
 
     const createUser = (value) => {
         return request(server)
@@ -11,6 +12,12 @@ describe('/api/users', () => {
 
     beforeEach(() => {
         server = require('../../src/index.js');
+
+        user = {
+            name: 'user',
+            email: 'user@mail.com',
+            password: 'secret'
+        };
     });
 
     afterEach(async () => {
@@ -19,37 +26,39 @@ describe('/api/users', () => {
 
     describe('POST /api/users', () => {
         it('should return 400 if name is not provided', async () => {
-            const res = await createUser({});
+            delete user.name;
+
+            const res = await createUser(user);
 
             expect(res.status).toBe(400);
         });
 
         it('should return 400 is name length is less than 4', async () => {
-            const res = await createUser({ name: '123' });
+            user.name = '123';
+
+            const res = await createUser(user);
 
             expect(res.status).toBe(400);
         });
 
         it('should return 400 if email is not provided', async () => {
-            const res = await createUser({ name: 'user' });
+            delete user.email;
+
+            const res = await createUser(user);
 
             expect(res.status).toBe(400);
         });
 
         it('should return 400 if password is not provided', async () => {
-            const payload = { name: 'user', email: 'user@mail.com' };
-            const res = await createUser(payload)
+            delete user.password;
+
+            const res = await createUser(user)
 
             expect(res.status).toBe(400);
         });
 
         it('should return 200 if request is valid', async () => {
-            const payload = {
-                name: 'user',
-                email: 'user@mail.com',
-                password: 'secret'
-            };
-            const res = await createUser(payload);
+            const res = await createUser(user);
 
             expect(res.status).toBe(200);
         });
