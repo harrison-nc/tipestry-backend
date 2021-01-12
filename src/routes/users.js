@@ -7,7 +7,9 @@ router.post('/', (req, res) => {
     let length = +req.body.name.length;
     if (length < 4) return res.status(400).send();
 
-    res.send();
+    if (!req.body.email) return res.status(400).send();
+
+    res.status(200).send();
 });
 
 module.exports = router;
