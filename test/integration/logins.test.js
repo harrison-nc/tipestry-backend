@@ -12,21 +12,49 @@ describe('/api/logins', () => {
     });
 
     describe('POST /api/logins', () => {
+        let user;
+
+        beforeEach(() => {
+            user = {
+                email: 'user@gmail.com',
+                password: 'secret',
+            };
+        });
 
         const login = (user) => {
             return request(server)
                 .post('/api/logins')
-                .send();
+                .send(user);
         };
 
         it('should return 400 if email is not provided', async () => {
-            const res = await login({});
+            delete user.email;
+
+            const res = await login(user);
 
             expect(res.status).toBe(400);
         });
 
         it('should return 400 if email is not valid', async () => {
-            const res = await login({ email: '1234' });
+            user.email = '1234';
+
+            const res = await login(user);
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 400 if password is not provided', async () => {
+            delete user.password;
+
+            const res = await login(user);
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 400 if password length is less than 5', async () => {
+            user.password = '1234';
+
+            const res = await login(user);
 
             expect(res.status).toBe(400);
         });
