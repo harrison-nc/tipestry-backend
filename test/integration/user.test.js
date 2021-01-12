@@ -50,6 +50,14 @@ describe('/api/users', () => {
             expect(res.status).toBe(400);
         });
 
+        it('should return 400 if email is not valid', async () => {
+            user.email = '1234';
+
+            const res = await createUser(user);
+
+            expect(res.status).toBe(400);
+        });
+
         it('should return 400 if password is not provided', async () => {
             delete user.password;
 
@@ -68,10 +76,6 @@ describe('/api/users', () => {
             const res = await createUser(user);
 
             expect(res.body).toMatchObject(user);
-        });
-
-        it('should save the user if the request is valid', async () => {
-            const res = await createUser(user);
         });
     });
 });
