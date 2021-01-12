@@ -3,6 +3,12 @@ const request = require('supertest');
 describe('/api/users', () => {
     let server;
 
+    const createUser = (value) => {
+        return request(server)
+            .post('/api/users')
+            .send(value);
+    };
+
     beforeEach(() => {
         server = require('../../src/index.js');
     });
@@ -13,17 +19,13 @@ describe('/api/users', () => {
 
     describe('POST /api/users', () => {
         it('should return 400 if name is not provided', async () => {
-            const res = await request(server)
-                .post('/api/users')
-                .send({});
+            const res = await createUser({});
 
             expect(res.status).toBe(400);
         });
 
         it('should return 400 is name length is less than 4', async () => {
-            const res = await request(server)
-                .post('/api/users')
-                .send({ name: '123' });
+            const res = await createUser({ name: '123' });
 
             expect(res.status).toBe(400);
         });
