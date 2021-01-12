@@ -12,10 +12,21 @@ describe('/api/logins', () => {
     });
 
     describe('POST /api/logins', () => {
-        it('should return 400 if email is not provided', async () => {
-            const res = await request(server)
+
+        const login = (user) => {
+            return request(server)
                 .post('/api/logins')
-                .send({});
+                .send();
+        };
+
+        it('should return 400 if email is not provided', async () => {
+            const res = await login({});
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 400 if email is not valid', async () => {
+            const res = await login({ email: '1234' });
 
             expect(res.status).toBe(400);
         });

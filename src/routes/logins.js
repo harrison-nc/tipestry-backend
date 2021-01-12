@@ -1,9 +1,11 @@
+const validate = require('../model/login');
 const express = require('express');
+const validator = require('../middleware/validateReqParameters');
+
 const router = express.Router();
+const validateInput = validator(validate);
 
-router.post('/', (req, res) => {
-    if (!req.body.email) return res.status(400).send();
-
+router.post('/', validateInput, (req, res) => {
     res.send();
 });
 
