@@ -66,13 +66,21 @@ describe('/api/users', () => {
             expect(res.status).toBe(400);
         });
 
+        it('should return 400 if password length is less than 5', async () => {
+            user.password = '1234';
+
+            const res = await createUser(user);
+
+            expect(res.status).toBe(400);
+        });
+
         it('should return 200 if request is valid', async () => {
             const res = await createUser(user);
 
             expect(res.status).toBe(200);
         });
 
-        it('should return the user if request if valid', async () => {
+        it('should return the user if request is valid', async () => {
             const res = await createUser(user);
 
             expect(res.body).toMatchObject(user);
