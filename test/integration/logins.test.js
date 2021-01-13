@@ -24,7 +24,6 @@ describe('/api/logins', () => {
             };
 
             await new User({
-                _id: new ObjectId().toHexString(),
                 name: 'user',
                 email: user.email,
                 password: user.password,
@@ -85,10 +84,22 @@ describe('/api/logins', () => {
             expect(res.status).toBe(400);
         });
 
-        it('should set jwt response header token if request is valid', async () => {
+        it('should return 200 if request is valid', async () => {
             const res = await login(user);
 
-            expect(res.headers).toHaveProperty('x-auth-token');
+            expect(res.status).toBe(200);
+        });
+
+        it('should return message if request is valid', async () => {
+            const res = await login(user);
+
+            expect(res.body).toHaveProperty('message');
+        });
+
+        it('should return access-token if request is valid', async () => {
+            const res = await login(user);
+
+            expect(res.body).toHaveProperty('access-token');
         });
     });
 });
