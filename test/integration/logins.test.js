@@ -1,4 +1,5 @@
 const request = require('supertest');
+const ObjectId = require('mongoose').Types.ObjectId;
 const { User } = require('../../src/model/user');
 
 describe('/api/logins', () => {
@@ -16,11 +17,18 @@ describe('/api/logins', () => {
     describe('POST /api/logins', () => {
         let user;
 
-        beforeEach(() => {
+        beforeEach(async () => {
             user = {
                 email: 'user@gmail.com',
                 password: 'secret',
             };
+
+            await new User({
+                _id: new ObjectId().toHexString(),
+                name: 'user',
+                email: user.email,
+                password: user.password,
+            }).save();
         });
 
         const login = (user) => {
@@ -59,6 +67,28 @@ describe('/api/logins', () => {
             const res = await login(user);
 
             expect(res.status).toBe(400);
+        });
+
+        it('should return 400 if email is invalid', async () => {
+            user.email = 'notfound@mail.com';
+
+            const res = await login(user);
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 400 if password is invalid', async () => {
+            user.password = 'notfound';
+
+            const res = await login(user);
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should set jwt response header token if request is valid', async () => {
+            const res = await login(user);
+
+            expect(res.headers).toHaveProperty('x-auth-token');
         });
     });
 });
