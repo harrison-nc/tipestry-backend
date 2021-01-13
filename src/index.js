@@ -6,6 +6,7 @@ const app = express();
 require('./startup/error')();
 require('./startup/config')();
 require('./startup/db')();
+require('./startup/validation')();
 require('./startup/routes')(app);
 
 const port = config.get('port');
