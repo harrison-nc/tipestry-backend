@@ -1,7 +1,7 @@
 const request = require('supertest');
 const User = require('../../src/db/user');
 
-describe('It works!', () => {
+describe('/api/posts', () => {
     let server;
 
     beforeEach(() => {
@@ -43,6 +43,14 @@ describe('It works!', () => {
 
         it('should return 400 if token is invalid', async () => {
             const res = await createPost(post, 'x-auth-token', '1234');
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 400 if title is not provided', async () => {
+            delete post.title;
+
+            const res = await createPost(post, 'x-auth-token', token);
 
             expect(res.status).toBe(400);
         });
