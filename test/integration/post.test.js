@@ -12,12 +12,24 @@ describe('It works!', () => {
     });
 
     describe('POST /api/posts', () => {
-        it('should return 401 if token is not provided', async () => {
-            const res = await request(server)
+
+        const createPost = (data, header = 'x-auth-token', value = '') => {
+            return request(server)
                 .post('/api/posts')
-                .send({});
+                .set(header, value)
+                .send(data);
+        };
+
+        it('should return 401 if token is not provided', async () => {
+            const res = await createPost({}, 'x-invalid-header');
 
             expect(res.status).toBe(401);
+        });
+
+        it('should return 400 if token is invalid', async () => {
+            const res = await createPost({}, 'x-auth-token', '1234');
+
+            expect(res.status).toBe(400);
         });
     });
 });
