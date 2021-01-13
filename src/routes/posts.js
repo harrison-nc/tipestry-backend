@@ -7,7 +7,9 @@ const router = express.Router();
 const validateParams = validator(validatePost);
 
 router.post('/', [auth, validateParams], (req, res) => {
-    res.send({ message: 'It works' });
+    const { title, resourceUrl, description, tags } = req.body;
+    const post = { title, resourceUrl, description, tags };
+    res.send(post);
 });
 
 module.exports = router;

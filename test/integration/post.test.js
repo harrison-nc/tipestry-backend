@@ -91,8 +91,16 @@ describe('/api/posts', () => {
         it('should return 200 if token is valid', async () => {
             const res = await createPost(post, 'x-auth-token', token);
 
-            console.log('---- response -----', res.body);
             expect(res.status).toBe(200);
+        });
+
+        it('should return the post if request is valid', async () => {
+            const res = await createPost(post, 'x-auth-token', token);
+
+            expect(res.body).toHaveProperty('title', post.title);
+            expect(res.body).toHaveProperty('resourceUrl', post.resourceUrl);
+            expect(res.body).toHaveProperty('description', post.description);
+            expect(res.body).toHaveProperty('tags', post.tags);
         });
     });
 });
