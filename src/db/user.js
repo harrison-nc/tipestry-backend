@@ -1,12 +1,13 @@
-const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const { User, validate } = require('../model/user');
 
+async function createUser(value) {
+    const salt = await bcrypt.genSalt(10);
 
-function createUser(value) {
     const user = new User({
         name: value.name,
         email: value.email,
-        password: value.password,
+        password: await bcrypt.hash(value.password, salt),
     });
 
     return user.save();
