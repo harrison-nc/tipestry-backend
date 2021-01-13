@@ -23,11 +23,7 @@ describe('/api/logins', () => {
                 password: 'secret',
             };
 
-            await new User({
-                name: 'user',
-                email: user.email,
-                password: user.password,
-            }).save();
+            await User.create({ name: 'user', ...user });
         });
 
         const login = (user) => {
