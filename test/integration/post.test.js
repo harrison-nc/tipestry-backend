@@ -91,6 +91,7 @@ describe('/api/posts', () => {
         it('should return 200 if token is valid', async () => {
             const res = await createPost(post, 'x-auth-token', token);
 
+            console.log('---- response -----', res.body);
             expect(res.status).toBe(200);
         });
     });
