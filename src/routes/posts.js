@@ -1,14 +1,17 @@
 const auth = require('../middleware/auth');
 const express = require('express');
+const Post = require('../db/post');
 const validatePost = require('../model/post');
 const validator = require('../middleware/validateReqParameters');
 
 const router = express.Router();
-const validateParams = validator(validatePost);
+const validatePostAndUser = validator.withUser(validatePost);
 
-router.post('/', [auth, validateParams], (req, res) => {
-    const { title, resourceUrl, description, tags } = req.body;
-    const post = { title, resourceUrl, description, tags };
+router.post('/', [auth, validatePostAndUser], async (req, res) => {
+    const { activeUser, body } = req;
+
+    const post = await Post.create(body, activeUser);
+
     res.send(post);
 });
 

@@ -1,5 +1,7 @@
 const request = require('supertest');
+const ObjectId = require('mongoose').Types.ObjectId;
 const User = require('../../src/db/user');
+const Post = require('../../src/db/post');
 
 describe('/api/posts', () => {
     let server;
@@ -9,6 +11,7 @@ describe('/api/posts', () => {
     });
 
     afterEach(async () => {
+        await Post.deleteMany({});
         await server.close();
     });
 
@@ -24,9 +27,13 @@ describe('/api/posts', () => {
                 upVotes: 0,
                 downVotes: 0,
                 tags: ['tag1'],
-                comments: [],
             }
-            token = new User().generateAuthToken();
+
+            token = new User({
+                _id: new ObjectId().toHexString(),
+                name: 'user',
+                email: 'user@mail.com',
+            }).generateAuthToken();
         });
 
         const createPost = (data, header = 'x-auth-token', value = token) => {
@@ -101,6 +108,15 @@ describe('/api/posts', () => {
             expect(res.body).toHaveProperty('resourceUrl', post.resourceUrl);
             expect(res.body).toHaveProperty('description', post.description);
             expect(res.body).toHaveProperty('tags', post.tags);
+        });
+
+        it('should save the post if request is valid', async () => {
+            const res = await createPost(post, 'x-auth-token', token);
+
+            const postInDb = await Post.findOne({ title: post.title });
+
+            expect(res.body).toHaveProperty('_id');
+            expect(postInDb).not.toBeNull();
         });
     });
 });
