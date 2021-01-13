@@ -23,6 +23,7 @@ describe('/api/posts', () => {
                 description: 'a description',
                 upVotes: 0,
                 downVotes: 0,
+                tags: ['tag1'],
                 comments: [],
             }
             token = new User().generateAuthToken();
@@ -57,6 +58,30 @@ describe('/api/posts', () => {
 
         it('should return 400 if resourceUrl is not provided', async () => {
             delete post.resourceUrl;
+
+            const res = await createPost(post, 'x-auth-token', token);
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 400 if hashtag is not provided', async () => {
+            delete post.tags;
+
+            const res = await createPost(post, 'x-auth-token', token);
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 400 tag is not an array', async () => {
+            post.tags = '1';
+
+            const res = await createPost(post, 'x-auth-token', token);
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 400 if at least on hashtag is not provided', async () => {
+            post.tags = [];
 
             const res = await createPost(post, 'x-auth-token', token);
 
