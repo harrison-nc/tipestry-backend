@@ -1,4 +1,4 @@
-const { User } = require('../../src/model/user');
+const User = require('../../src/db/user');
 const ObjectId = require('mongoose').Types.ObjectId;
 const request = require('supertest');
 

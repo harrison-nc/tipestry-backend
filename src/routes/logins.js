@@ -1,19 +1,20 @@
 const express = require('express');
 const validator = require('../middleware/validateReqParameters');
 const validate = require('../model/login');
-const { User } = require('../model/user');
+const User = require('../db/user');
 
 const router = express.Router();
 const validateInput = validator(validate);
 
 router.post('/', validateInput, async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
-    if (!user) return res.status(400).send('Invalid email or password.');
+    const { email, password } = req.body;
 
-    if (!(user.password === req.body.password)) return res.status(400).send('Invalid email or password');
+    const { succeeded, token } = await User.login(email, password);
 
-    const token = user.generateAuthToken();
+    if (!succeeded) return res.status(400).send('Invalid user or password');
+
     res.header('x-auth-token', token);
+
     res.send({
         message: 'Login successful',
         ['access-token']: token,

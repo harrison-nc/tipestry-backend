@@ -3,7 +3,7 @@ const User = require('../db/user');
 const validator = require('../middleware/validateReqParameters');
 
 const router = express.Router();
-const validateInput = validator(User.validate);
+const validateInput = validator(User.validateModel);
 
 router.post('/', validateInput, async (req, res) => {
     const user = await User.create(req.body);

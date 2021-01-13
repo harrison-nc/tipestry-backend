@@ -1,6 +1,6 @@
 const request = require('supertest');
 const ObjectId = require('mongoose').Types.ObjectId;
-const { User } = require('../../src/model/user');
+const User = require('../../src/db/user');
 
 describe('/api/logins', () => {
     let server;
