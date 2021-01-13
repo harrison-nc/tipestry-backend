@@ -55,6 +55,14 @@ describe('/api/posts', () => {
             expect(res.status).toBe(400);
         });
 
+        it('should return 400 if resourceUrl is not provided', async () => {
+            delete post.resourceUrl;
+
+            const res = await createPost(post, 'x-auth-token', token);
+
+            expect(res.status).toBe(400);
+        });
+
         it('should return 200 if token is valid', async () => {
             const res = await createPost(post, 'x-auth-token', token);
 
