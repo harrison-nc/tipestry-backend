@@ -23,6 +23,7 @@ describe('/api/users', () => {
     });
 
     afterEach(async () => {
+        await User.deleteMany({});
         await server.close();
     });
 

@@ -1,4 +1,5 @@
 const request = require('supertest');
+const { User } = require('../../src/model/user');
 
 describe('/api/logins', () => {
     let server;
@@ -8,6 +9,7 @@ describe('/api/logins', () => {
     });
 
     afterEach(async () => {
+        await User.deleteMany({});
         await server.close();
     });
 
