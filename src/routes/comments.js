@@ -6,12 +6,6 @@ const validator = require('../middleware/validateReqParameters');
 const router = express.Router();
 const validateComment = validator(commentValidator);
 
-router.get('/', async (req, res) => {
-	const comments = await Post.find().select('comments');
-
-	res.send(comments);
-});
-
 router.post('/', validateComment, async (req, res) => {
 	const { postId } = req.body;
 

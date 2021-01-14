@@ -127,21 +127,5 @@ describe('/api/comments', () => {
 			expect(post.comments[0].user.name).toMatch(/author/);
 			expect(post.comments[0].user.email).toMatch(/author/);
 		});
-
-		describe('GET /api/comments', () => {
-			it('should return 200', async () => {
-				const res = await request(server).get('/api/comments');
-
-				expect(res.status).toBe(200);
-			});
-
-			it('should return an array post containing comments array', async () => {
-				const res = await request(server).get('/api/comments');
-
-				expect(Array.isArray(res.body)).toBe(true);
-				expect(res.body.comments).toBeDefined();
-				expect(Array.isArray(res.body.comments)).toBe(true);
-			});
-		});
 	});
 });

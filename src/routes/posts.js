@@ -46,5 +46,15 @@ router.post('/:id/votes', validatePostId, async (req, res) => {
     res.send({ upVotes, downVotes });
 });
 
+router.get('/:id/comments', validatePostId, async (req, res) => {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) return res.status(404).send({ error: 'Post not found.' });
+
+    const { _id, comments } = post;
+
+    res.send({ _id, comments });
+});
+
 module.exports = router;
 

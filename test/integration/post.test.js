@@ -223,4 +223,32 @@ describe('/api/posts', () => {
             expect(post.downVotes).toEqual(downVotes);
         });
     });
+
+    describe('GET /api/posts/:id/comments', () => {
+
+        const getPostComments = (id) => {
+            return request(server)
+                .get(`/api/posts/${id}/comments`);
+        };
+
+        it('should return 400 if post id is invalid', async () => {
+            const res = await getPostComments('1');
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 200', async () => {
+            const res = await getPostComments(dbPost._id);
+
+            expect(res.status).toBe(200);
+        });
+
+        it('should return an array of comments', async () => {
+            const res = await getPostComments(dbPost._id);
+
+            expect(res.body).toHaveProperty('comments');
+            expect(res.body.comments).toBeDefined();
+            expect(Array.isArray(res.body.comments)).toBe(true);
+        });
+    });
 });
