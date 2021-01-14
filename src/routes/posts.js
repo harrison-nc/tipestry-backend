@@ -7,7 +7,7 @@ const validateObjectId = require('../middleware/validateObjectId');
 
 const router = express.Router();
 const validatePostAndUser = validator.withUser(validatePost);
-const paramId = validateObjectId();
+const validatePostId = validateObjectId();
 const ObjectId = require('mongoose').Types.ObjectId;
 
 
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
     res.send(posts);
 });
 
-router.get('/:id', paramId, async (req, res) => {
+router.get('/:id', validatePostId, async (req, res) => {
     const post = await Post.findById(req.params.id);
 
     if (!post) return res.status(404).send({ error: 'Post not found.' });
@@ -32,4 +32,14 @@ router.post('/', [auth, validatePostAndUser], async (req, res) => {
     res.send(post);
 });
 
+router.post('/:id/votes', validatePostId, async (req, res) => {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) return res.status(404).send({ error: 'Post not found.' });
+
+    const { upVotes, downVotes } = req.body;
+    res.send({ upVotes, downVotes });
+});
+
 module.exports = router;
+
