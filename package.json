@@ -20,7 +20,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest --testEnvironment node --watchAll --coverage --runInBand --detectOpenHandles"
+    "test": "jest --testEnvironment node --watchAll --runInBand --detectOpenHandles"
   },
   "keywords": [
     "nodejs",
