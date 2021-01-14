@@ -5,9 +5,36 @@ const Post = require('../../src/db/post');
 
 describe('/api/posts', () => {
     let server;
+    let token;
+    let user;
+    let post;
+    let dbPost;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         server = require('../../src/index');
+
+        user = new User({
+            _id: new ObjectId().toHexString(),
+            name: 'user',
+            email: 'user@mail.com',
+        });
+
+        post = {
+            title: 'post1',
+            resourceUrl: 'resource.com/myresource',
+            description: 'a description',
+            upVotes: 0,
+            downVotes: 0,
+            tags: ['tag1'],
+        }
+
+        token = user.generateAuthToken();
+
+        try {
+            dbPost = await Post.create(post, user);
+        } catch (e) {
+            console.error(e);
+        }
     });
 
     afterEach(async () => {
@@ -15,27 +42,56 @@ describe('/api/posts', () => {
         await server.close();
     });
 
-    describe('POST /api/posts', () => {
-        let post;
-        let token;
+    describe('GET /api/posts', () => {
+        const getAllPost = (param = '') => {
+            return request(server).get('/api/posts/' + param);
+        };
 
-        beforeEach(() => {
-            post = {
-                title: 'post1',
-                resourceUrl: 'resource.com/myresource',
-                description: 'a description',
-                upVotes: 0,
-                downVotes: 0,
-                tags: ['tag1'],
-            }
+        it('should return 200', async () => {
+            const res = await getAllPost();
 
-            token = new User({
-                _id: new ObjectId().toHexString(),
-                name: 'user',
-                email: 'user@mail.com',
-            }).generateAuthToken();
+            expect(res.status).toBe(200);
         });
 
+        it('should return an empty array', async () => {
+            const res = await getAllPost();
+
+            expect(Array.isArray(res.body)).toBe(true);
+        });
+
+        it('should return an array of posts', async () => {
+            const res = await getAllPost();
+
+            expect(res.body.length).toBe(1);
+        });
+
+        describe('GET /api/posts/:id', () => {
+            it('should return 400 if id is invalid', async () => {
+                const res = await getAllPost('1');
+
+                expect(res.status).toBe(400);
+            });
+
+            it('should return 404 if a post with the given id does not exists', async () => {
+                const res = await getAllPost(new ObjectId().toHexString());
+
+                expect(res.status).toBe(404);
+            });
+
+            it('should return a post if request is valid', async () => {
+                const res = await getAllPost(dbPost._id);
+
+                expect(res.body).not.toBeNull();
+                expect(res.body).toMatchObject({
+                    _id: dbPost._id.toHexString(),
+                    title: dbPost.title,
+                });
+                expect(res.body).toHaveProperty('createdAt');
+            });
+        });
+    });
+
+    describe('POST /api/posts', () => {
         const createPost = (data, header = 'x-auth-token', value = token) => {
             return request(server)
                 .post('/api/posts')
