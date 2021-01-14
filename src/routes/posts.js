@@ -38,6 +38,11 @@ router.post('/:id/votes', validatePostId, async (req, res) => {
     if (!post) return res.status(404).send({ error: 'Post not found.' });
 
     const { upVotes, downVotes } = req.body;
+
+    post.upVotes = upVotes;
+    post.downVotes = downVotes;
+    await post.save();
+
     res.send({ upVotes, downVotes });
 });
 
