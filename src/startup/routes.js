@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const home = require('../routes/home');
 const users = require('../routes/users');
 const logins = require('../routes/logins');
@@ -7,6 +8,7 @@ const comments = require('../routes/comments');
 const error = require('../middleware/error');
 
 module.exports = function (app) {
+	app.use(cors());
     app.use(express.json());
     app.use('/', home);
     app.use('/api/users', users);
