@@ -11,13 +11,19 @@ router.post('/', validateInput, async (req, res) => {
 
     const { succeeded, token } = await User.login(email, password);
 
-    if (!succeeded) return res.status(400).send('Invalid user or password');
+    if (!succeeded) return res.status(400).send({
+        error: {
+            login: 'Invalid user or password'
+        }
+    });
 
     res.header('x-auth-token', token);
 
     res.send({
-        message: 'Login successful',
-        ['access-token']: token,
+        login: {
+            message: 'Login successeful',
+            ['access-token']: token,
+        }
     });
 });
 

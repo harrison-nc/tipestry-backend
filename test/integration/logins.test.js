@@ -89,13 +89,13 @@ describe('/api/logins', () => {
         it('should return message if request is valid', async () => {
             const res = await login(user);
 
-            expect(res.body).toHaveProperty('message');
+            expect(res.body).toHaveProperty('login.message');
         });
 
         it('should return access-token if request is valid', async () => {
             const res = await login(user);
 
-            expect(res.body).toHaveProperty('access-token');
+            expect(res.body).toHaveProperty('login.access-token');
         });
     });
 });
