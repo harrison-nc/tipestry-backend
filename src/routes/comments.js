@@ -2,16 +2,14 @@ const express = require('express');
 const Post = require('../db/post');
 const commentValidator = require('../model/comment');
 const validator = require('../middleware/validateReqParameters');
+const postVerifier = require('../middleware/verifyPost');
 
 const router = express.Router();
 const validateComment = validator(commentValidator);
+const verifyPost = postVerifier.inRequestBody;
 
-router.post('/', validateComment, async (req, res) => {
-	const { postId } = req.body;
-
-	const post = await Post.findById(postId);
-
-	if(!post) return res.status(404).send({ error: 'Post not found' });
+router.post('/', [validateComment, verifyPost], async (req, res) => {
+	const post = req.postParam;
 
 	const { text } = req.body;
 

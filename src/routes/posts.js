@@ -4,6 +4,7 @@ const Post = require('../db/post');
 const validatePost = require('../model/post');
 const validator = require('../middleware/validateReqParameters');
 const validateObjectId = require('../middleware/validateObjectId');
+const verifyPost = require('../middleware/verifyPost');
 
 const router = express.Router();
 const validatePostAndUser = validator.withUser(validatePost);
@@ -16,10 +17,8 @@ router.get('/', async (req, res) => {
     res.send(posts);
 });
 
-router.get('/:id', validatePostId, async (req, res) => {
-    const post = await Post.findById(req.params.id);
-
-    if (!post) return res.status(404).send({ error: 'Post not found.' });
+router.get('/:id', [validatePostId, verifyPost], async (req, res) => {
+    const post = req.postParam;
 
     res.send(post);
 });
@@ -32,10 +31,8 @@ router.post('/', [auth, validatePostAndUser], async (req, res) => {
     res.send(post);
 });
 
-router.post('/:id/votes', validatePostId, async (req, res) => {
-    const post = await Post.findById(req.params.id);
-
-    if (!post) return res.status(404).send({ error: 'Post not found.' });
+router.post('/:id/votes', [validatePostId, verifyPost], async (req, res) => {
+    const post = req.postParam;
 
     const { upVotes, downVotes } = req.body;
 
@@ -46,10 +43,8 @@ router.post('/:id/votes', validatePostId, async (req, res) => {
     res.send({ upVotes, downVotes });
 });
 
-router.get('/:id/comments', validatePostId, async (req, res) => {
-    const post = await Post.findById(req.params.id);
-
-    if (!post) return res.status(404).send({ error: 'Post not found.' });
+router.get('/:id/comments', [validatePostId, verifyPost], async (req, res) => {
+    const post = req.postParam;
 
     const { _id, comments } = post;
 
