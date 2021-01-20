@@ -1,5 +1,6 @@
 {
     "port": "PORT",
     "db": "tipestry_db",
-    "jwtPrivateKey": "tipestry_jwtPrivateKey"
+    "jwtPrivateKey": "tipestry_jwtPrivateKey",
+    "logRequest": "tipestry_logRequest"
 }

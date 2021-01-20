@@ -1,4 +1,5 @@
 {
     "port": 3000,
-    "db": "mongodb://localhost/tipestry"
+    "db": "mongodb://localhost/tipestry",
+    "logRequest": false
 }
