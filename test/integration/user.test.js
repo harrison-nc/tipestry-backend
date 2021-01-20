@@ -60,6 +60,14 @@ describe('/api/users', () => {
             expect(res.status).toBe(400);
         });
 
+        it('should return 400 if email already exist', async () => {
+            await User.create(user);
+
+            const res = await createUser(user);
+
+            expect(res.status).toBe(400);
+        });
+
         it('should return 400 if password is not provided', async () => {
             delete user.password;
 
