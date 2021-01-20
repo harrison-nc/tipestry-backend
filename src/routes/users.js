@@ -6,12 +6,17 @@ const router = express.Router();
 const validateInput = validator(User.validateModel);
 
 router.post('/', [validateInput, verifyEmail], async (req, res) => {
-    const user = await User.create(req.body);
+	const user = await User.create(req.body);
 
-    res.status(200).send({
-        name: user.name,
-        email: user.email,
-    });
+	const { name, email } = user;
+
+	res.status(200).send({
+		register: {
+			name,
+			email,
+			message: 'Account created successfully'
+		}
+	});
 });
 
 async function verifyEmail(req, res, next) {
