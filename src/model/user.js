@@ -7,5 +7,7 @@ const schema = Joi.object({
 }).label('user').required();
 
 module.exports = function (user) {
-    return schema.validate(user);
+    return schema.validate(user, {
+        abortEarly: false
+    });
 }
