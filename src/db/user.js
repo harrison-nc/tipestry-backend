@@ -61,7 +61,7 @@ async function login(email, password) {
 
     const token = user.generateAuthToken();
 
-    return { succeeded: true, token };
+    return { succeeded: true, token, user };
 }
 
 function generateAuthToken() {

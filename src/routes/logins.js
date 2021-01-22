@@ -9,13 +9,17 @@ const validateInput = validator(validate);
 router.post('/', validateInput, async (req, res) => {
     const { email, password } = req.body;
 
-    const { succeeded, token } = await User.login(email, password);
+    const { succeeded, token, user } = await User.login(email, password);
 
     if (!succeeded) return res.status(400).send({
         error: {
-            login: 'Invalid user or password'
+            login: {
+                message: 'Invalid email or password'
+            }
         }
     });
+
+    const { name } = user;
 
     res.header('x-auth-token', token);
 
@@ -23,6 +27,8 @@ router.post('/', validateInput, async (req, res) => {
         login: {
             message: 'Login successeful',
             ['access-token']: token,
+            name,
+            email,
         }
     });
 });
