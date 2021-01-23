@@ -6,12 +6,12 @@ const Schema = mongoose.Schema;
 const commentSchema = new Schema({
     text: {
         type: String,
-            required: true,
-                trim: true,
+        required: true,
+        trim: true,
     },
     createdAt: {
         type: Date,
-            default: Date.now(),
+        default: Date.now(),
     },
     user: {
         type: new Schema({
@@ -35,13 +35,17 @@ const schema = new Schema({
         type: new Schema({
             name: {
                 type: String,
-                required: true,
                 trim: true,
+                default: 'annonymous'
             },
             email: {
                 type: String,
-                required: true,
+                default: 'annonymous',
                 trim: true,
+            },
+            avatarUrl: {
+                type: String,
+                default: 'https://picsum.photos/50'
             }
         }),
         required: true,
@@ -94,7 +98,7 @@ function createPost(post, user) {
 
 schema.statics.create = createPost;
 
-schema.methods.addComment = async function(comment) {
+schema.methods.addComment = async function (comment) {
     let user = {};
 
     if (comment.user) user = comment.user;

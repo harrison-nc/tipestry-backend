@@ -6,7 +6,7 @@ const schema = Joi.object({
     description: Joi.string(),
     upVotes: Joi.number(),
     downVotes: Joi.number(),
-    tags: Joi.array().min(1).required()
+    tags: Joi.array()
 }).label('post').required();
 
 const userSchema = Joi.object({
