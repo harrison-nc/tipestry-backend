@@ -16,7 +16,9 @@ const userSchema = Joi.object({
 }).label('post user');
 
 function validatePostUser(user) {
-    return userSchema.validate(user);
+    return userSchema.validate(user, {
+        abortEarly: false
+    });
 }
 
 module.exports = function (user, input) {
@@ -30,5 +32,7 @@ module.exports = function (user, input) {
 
     if (result.error) return result;
 
-    return schema.validate(input);
+    return schema.validate(input, {
+        abortEarly: false
+    });
 }

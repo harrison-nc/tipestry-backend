@@ -9,8 +9,6 @@ const verifyPost = require('../middleware/verifyPost');
 const router = express.Router();
 const validatePostAndUser = validator.withUser(validatePost);
 const validatePostId = validateObjectId();
-const ObjectId = require('mongoose').Types.ObjectId;
-
 
 router.get('/', async (req, res) => {
     const posts = await Post.find();

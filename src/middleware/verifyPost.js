@@ -1,17 +1,12 @@
 const Post = require('../db/post');
+const { postError } = require('../util/errors');
 
 const verfy = async (req, res, next, postId) => {
     const post = await Post.findById(postId);
 
-    if(!post) {
-        const error = {
-        	error: {
-        		postId: postId,
-        		messages: ['Post not found']
-     		}
-     	};
-
-    	return res.status(404).send(error);
+    if (!post) {
+        res.status(404);
+        return res.send(postError(postId, 'Post not found'));
     }
 
     req.postParam = post;
@@ -24,5 +19,5 @@ module.exports = exports = function verifyParamPostId(req, res, next) {
 }
 
 exports.inRequestBody = function (req, res, next) {
-	verfy(req, res, next, req.body.postId);
+    verfy(req, res, next, req.body.postId);
 };

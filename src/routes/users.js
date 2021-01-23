@@ -1,6 +1,8 @@
 const express = require('express');
 const User = require('../db/user');
 const validator = require('../middleware/validateReqParameters');
+const { paramError } = require('../util/errors');
+const { registerResult } = require('../util/values');
 
 const router = express.Router();
 const validateInput = validator(User.validateModel);
@@ -10,13 +12,7 @@ router.post('/', [validateInput, verifyEmail], async (req, res) => {
 
 	const { name, email } = user;
 
-	res.status(200).send({
-		register: {
-			name,
-			email,
-			message: 'Account created successfully'
-		}
-	});
+	res.status(200).send(registerResult(name, email, 'Account created successfully'));
 });
 
 async function verifyEmail(req, res, next) {
@@ -25,14 +21,8 @@ async function verifyEmail(req, res, next) {
 	const exist = await User.findByEmail(req.body.email);
 
 	if (exist) {
-		const error = {
-			error: {
-				key: 'email',
-				email: email,
-				message: 'Email already exist.'
-			}
-		};
-		return res.status(400).send(error);
+		res.status(400);
+		return res.send(paramError('email', email, 'Email already exist.'));
 	}
 	next();
 }
