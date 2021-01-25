@@ -29,16 +29,28 @@ router.post('/', [auth, validateUserAndPost], async (req, res) => {
     res.send(post);
 });
 
-router.post('/:id/votes', [validatePostId, verifyPost], async (req, res) => {
+router.post('/:id/upvotes', [validatePostId, verifyPost], async (req, res) => {
     const post = req.postParam;
 
-    const { upVotes, downVotes } = req.body;
+    const { upVotes } = req.body;
 
     post.upVotes = upVotes;
-    post.downVotes = downVotes;
+
     await post.save();
 
-    res.send({ upVotes, downVotes });
+    res.send({ upVotes });
+});
+
+router.post('/:id/downvotes', [validatePostId, verifyPost], async (req, res) => {
+    const post = req.postParam;
+
+    const { downVotes } = req.body;
+
+    post.downVotes = downVotes;
+
+    await post.save();
+
+    res.send({ downVotes });
 });
 
 router.get('/:id/comments', [validatePostId, verifyPost], async (req, res) => {

@@ -164,51 +164,103 @@ describe('/api/posts', () => {
         });
     });
 
-    describe('POST /api/posts/:id/votes', () => {
+    describe('POST /api/posts/:id', () => {
+        let endPoint;
+
         const updateVotes = (id, votes) => {
             return request(server)
-                .post(`/api/posts/${id}/votes`)
+                .post(`/api/posts/${id}/${endPoint}`)
                 .send(votes);
         }
 
-        it('should return 400 if post id is invalid', async () => {
-            const postId = 1;
+        describe('POST /api/posts/:id/upvotes', () => {
+            beforeEach(() => {
+                endPoint = 'upvotes';
+            });
 
-            const res = await updateVotes(postId, { upVotes: 1, downVotes: 1 });
+            it('should return 400 if post id is invalid', async () => {
+                const postId = 1;
 
-            expect(res.status).toBe(400);
+                const res = await updateVotes(postId, { upVotes: 1, downVotes: 1 });
+
+                expect(res.status).toBe(400);
+            });
+
+            it('should return 404 if post with the given id is not found', async () => {
+                const postId = new ObjectId().toHexString();
+
+                const res = await updateVotes(postId, { upVotes: 1, downVotes: 1 });
+
+                expect(res.status).toBe(404);
+            });
+
+            it('should return upvotes if request is valid', async () => {
+                const postId = dbPost._id;
+                let { upVotes } = dbPost;
+                upVotes += 1;
+
+                const res = await updateVotes(postId, { upVotes: 1 });
+
+                expect(res.body).toMatchObject({ upVotes: 1 });
+            });
+
+            it('should save upvotes if request is valid', async () => {
+                const postId = dbPost._id;
+                let { upVotes } = dbPost;
+                upVotes += 1;
+
+                await updateVotes(postId, { upVotes });
+
+                const post = await Post.findById(postId);
+
+                expect(post).not.toBeNull();
+                expect(post.upVotes).toEqual(upVotes);
+            });
         });
 
-        it('should return 404 if post with the given id is not found', async () => {
-            const postId = new ObjectId().toHexString();
+        describe('POST /api/posts/:id/downvotes', () => {
+            beforeEach(() => {
+                endPoint = 'downvotes';
+            });
 
-            const res = await updateVotes(postId, { upVotes: 1, downVotes: 1 });
+            it('should return 400 if post id is invalid', async () => {
+                const postId = 1;
 
-            expect(res.status).toBe(404);
-        });
+                const res = await updateVotes(postId, { upVotes: 1, downVotes: 1 });
 
-        it('should return votes if request is valid', async () => {
-            const postId = dbPost._id;
-            let { upVotes, downVotes } = dbPost;
-            upVotes += 1;
+                expect(res.status).toBe(400);
+            });
 
-            const res = await updateVotes(postId, { upVotes: 1, downVotes: 0 });
+            it('should return 404 if post with the given id is not found', async () => {
+                const postId = new ObjectId().toHexString();
 
-            expect(res.body).toMatchObject({ upVotes: 1, downVotes: 0 });
-        });
+                const res = await updateVotes(postId, { upVotes: 1, downVotes: 1 });
 
-        it('should save votes if request is valid', async () => {
-            const postId = dbPost._id;
-            let { upVotes, downVotes } = dbPost;
-            upVotes += 1;
+                expect(res.status).toBe(404);
+            });
 
-            const res = await updateVotes(postId, { upVotes, downVotes });
+            it('should return downVotes if request is valid', async () => {
+                const postId = dbPost._id;
+                let { downVotes } = dbPost;
+                downVotes += 1;
 
-            const post = await Post.findById(postId);
+                const res = await updateVotes(postId, { downVotes: 1 });
 
-            expect(post).not.toBeNull();
-            expect(post.upVotes).toEqual(upVotes);
-            expect(post.downVotes).toEqual(downVotes);
+                expect(res.body).toMatchObject({ downVotes: 1 });
+            });
+
+            it('should save downVotes if request is valid', async () => {
+                const postId = dbPost._id;
+                let { downVotes } = dbPost;
+                downVotes += 1;
+
+                await updateVotes(postId, { downVotes });
+
+                const post = await Post.findById(postId);
+
+                expect(post).not.toBeNull();
+                expect(post.downVotes).toEqual(downVotes);
+            });
         });
     });
 
