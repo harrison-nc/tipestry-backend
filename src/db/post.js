@@ -26,7 +26,6 @@ const commentSchema = new Schema({
                 trim: true,
             }
         }),
-        required: true,
     }
 });
 
@@ -40,15 +39,14 @@ const schema = new Schema({
             },
             email: {
                 type: String,
-                default: 'annonymous',
+                default: 'annonymous@mail.com',
                 trim: true,
             },
             avatarUrl: {
                 type: String,
-                default: 'https://picsum.photos/50'
+                default: 'https://picsum.photos/50',
             }
         }),
-        required: true,
     },
     title: {
         type: String,
@@ -79,21 +77,29 @@ const schema = new Schema({
 
 function createPost(post, user) {
     const { title, resourceUrl, description, tags } = post;
-    const { _id, name, email } = user;
 
-    const newPost = new Post({
-        user: {
+    const dbPost = {
+        title,
+        resourceUrl,
+        description
+    };
+
+    if (user) {
+        const { _id, name, email } = user;
+        dbPost.user = {
             _id,
             name,
             email,
-        },
-        title,
-        resourceUrl,
-        description,
-        tags,
-    });
+        };
+    }
 
-    return newPost.save();
+    else dbPost.user = {};
+
+    if (tags) dbPost.tags = tags;
+
+    else dbPost.tags = [];
+
+    return new Post(dbPost).save();
 }
 
 schema.statics.create = createPost;

@@ -12,7 +12,7 @@ const schema = Joi.object({
 const userSchema = Joi.object({
     _id: Joi.objectId().required(),
     name: Joi.string().required(),
-    email: Joi.string().required().email(),
+    email: Joi.string().email().required(),
 }).label('post user');
 
 function validatePostUser(user) {

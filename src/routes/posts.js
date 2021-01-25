@@ -1,4 +1,4 @@
-const auth = require('../middleware/auth');
+const auth = require('../middleware/auth')({ tokenRequired: false });
 const express = require('express');
 const Post = require('../db/post');
 const validatePost = require('../model/post');
@@ -7,7 +7,7 @@ const validateObjectId = require('../middleware/validateObjectId');
 const verifyPost = require('../middleware/verifyPost');
 
 const router = express.Router();
-const validatePostAndUser = validator.withUser(validatePost);
+const validateUserAndPost = validator.withUser(validatePost);
 const validatePostId = validateObjectId();
 
 router.get('/', async (req, res) => {
@@ -21,7 +21,7 @@ router.get('/:id', [validatePostId, verifyPost], async (req, res) => {
     res.send(post);
 });
 
-router.post('/', [auth, validatePostAndUser], async (req, res) => {
+router.post('/', [auth, validateUserAndPost], async (req, res) => {
     const { activeUser, body } = req;
 
     const post = await Post.create(body, activeUser);

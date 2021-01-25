@@ -18,12 +18,15 @@ exports.withUser = function (validator) {
     return (req, res, next) => {
         const { activeUser, body } = req;
 
-        if (!activeUser) return res.status(400).send(authError('User not logged in'));
+        if (!activeUser) {
+            validator('', body);
+        }
+        else {
+            const { error } = validator(activeUser, body);
 
-        const { error } = validator(activeUser, body);
+            if (error) return res.status(400).send(inputError(error));
 
-        if (error) return res.status(400).send(inputError(error));
-
+        }
         next();
     }
 }

@@ -11,6 +11,8 @@ describe('/api/posts', () => {
     let dbPost;
 
     beforeEach(async () => {
+        global.debug = false;
+
         server = require('../../src/index');
 
         user = new User({
@@ -53,13 +55,13 @@ describe('/api/posts', () => {
             expect(res.status).toBe(200);
         });
 
-        it('should return an empty array', async () => {
+        it('should return an array of posts', async () => {
             const res = await getAllPost();
 
             expect(Array.isArray(res.body)).toBe(true);
         });
 
-        it('should return an array of posts', async () => {
+        it('should return an array containing one posts', async () => {
             const res = await getAllPost();
 
             expect(res.body.length).toBe(1);
@@ -92,18 +94,12 @@ describe('/api/posts', () => {
     });
 
     describe('POST /api/posts', () => {
-        const createPost = (data, header = 'x-auth-token', value = token) => {
+        const createPost = (data, header, value) => {
             return request(server)
                 .post('/api/posts')
                 .set(header, value)
                 .send(data);
         };
-
-        it('should return 401 if token is not provided', async () => {
-            const res = await createPost(post, 'x-invalid-header');
-
-            expect(res.status).toBe(401);
-        });
 
         it('should return 400 if token is invalid', async () => {
             const res = await createPost(post, 'x-auth-token', '1234');
@@ -127,14 +123,6 @@ describe('/api/posts', () => {
             expect(res.status).toBe(400);
         });
 
-        // it('should return 400 if hashtag is not provided', async () => {
-        //     delete post.tags;
-
-        //     const res = await createPost(post, 'x-auth-token', token);
-
-        //     expect(res.status).toBe(400);
-        // });
-
         it('should return 400 tag is not an array', async () => {
             post.tags = '1';
 
@@ -143,13 +131,13 @@ describe('/api/posts', () => {
             expect(res.status).toBe(400);
         });
 
-        // it('should return 400 if at least on hashtag is not provided', async () => {
-        //     post.tags = [];
+        it('should return 200 if no token is provided and request is valid', async () => {
+            post.title = 'Anno post';
 
-        //     const res = await createPost(post, 'x-auth-token', token);
+            const res = await createPost(post, 'x-no-auth', '');
 
-        //     expect(res.status).toBe(400);
-        // });
+            expect(res.status).toBe(200);
+        });
 
         it('should return 200 if token is valid', async () => {
             const res = await createPost(post, 'x-auth-token', token);
