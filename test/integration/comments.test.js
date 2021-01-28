@@ -3,13 +3,14 @@ const Post = require('../../src/db/post');
 const User = require('../../src/db/user');
 const request = require('supertest');
 
-describe('/api/comments', () => {
+describe('Test Post Comment', () => {
 	let server;
 	let postId;
 
 	const addComment = (comment) => {
+		comment.postId = postId;
 		return request(server)
-			.post('/api/comments')
+			.post(`/api/posts/${postId}/comments`)
 			.send(comment);
 	};
 
@@ -18,19 +19,19 @@ describe('/api/comments', () => {
 		postId = new ObjectId().toHexString();
 
 		const user = new User({
-            _id: new ObjectId().toHexString(),
-            name: 'user',
-            email: 'user@mail.com',
-        });
+			_id: new ObjectId().toHexString(),
+			name: 'user',
+			email: 'user@mail.com',
+		});
 
 		let post = {
-            title: 'post1',
-            resourceUrl: 'resource.com/myresource',
-            description: 'a description',
-            upVotes: 0,
-            downVotes: 0,
-            tags: ['tag1'],
-        };
+			title: 'post1',
+			resourceUrl: 'resource.com/myresource',
+			description: 'a description',
+			upVotes: 0,
+			downVotes: 0,
+			tags: ['tag1'],
+		};
 
 		post = await Post.create(post, user);
 		postId = post._id.toHexString();
@@ -41,41 +42,49 @@ describe('/api/comments', () => {
 		await server.close();
 	})
 
-	describe('POST /api/comments', () => {
-		it('should return 400 if post id is not provided', async () => {
-			const res = await addComment({text: 'comment'});
-
-			expect(res.status).toBe(400);
-		});
-
+	describe('POST /api/posts/:id/comments', () => {
 		it('should return 400 if post id is invalid', async () => {
-			const res = await addComment({postId: 1, text: 'comment'});
+			postId = 1;
+
+			const res = await addComment({ text: 'comment' });
 
 			expect(res.status).toBe(400);
 		});
 
 		it('should return 400 if text is not provided', async () => {
-			const res = await addComment({ postId });
+			const res = await addComment({});
+
+			expect(res.status).toBe(400);
+		});
+
+		it('should return 400 if text is empty', async () => {
+			const res = await addComment({ text: '' });
+
+			expect(res.status).toBe(400);
+		});
+
+		it('should return 400 if text is blank', async () => {
+			const res = await addComment({ text: ' ' });
 
 			expect(res.status).toBe(400);
 		});
 
 		it('should return 404 if a post with the given id is not found', async () => {
-			const postId = new ObjectId().toHexString();
+			postId = new ObjectId().toHexString();
 
-			const res = await addComment({ postId, text: 'comment' });
+			const res = await addComment({ text: 'comment' });
 
 			expect(res.status).toBe(404);
 		});
 
 		it('should return 200 if request is valid', async () => {
-			const res = await addComment({ postId, text: 'comment' });
+			const res = await addComment({ text: 'comment' });
 
 			expect(res.status).toBe(200);
 		});
 
 		it('should return the comment if the request is valid', async () => {
-			const res = await addComment({ postId, text: 'comment' });
+			const res = await addComment({ text: 'comment' });
 
 			expect(res.body).toMatchObject({ text: 'comment' });
 			expect(res.body).toHaveProperty('_id');
@@ -84,7 +93,7 @@ describe('/api/comments', () => {
 		it('should save the comment if the request is valid', async () => {
 			const comment = 'commen 1';
 
-			await addComment({ postId, text: comment });
+			await addComment({ text: comment });
 
 			const post = await Post.findById(postId).select('comments -_id');
 
@@ -97,9 +106,11 @@ describe('/api/comments', () => {
 		});
 
 		it('should save annon user if no user is provided', async () => {
-			const res = await addComment({ postId, text: 'comment' });
+			await addComment({ text: 'comment' });
 
 			const post = await Post.findById(postId).select('comments');
+
+			console.error(post);
 
 			expect(post).not.toBeNull();
 			expect(post.comments).not.toBeNull();
@@ -112,8 +123,7 @@ describe('/api/comments', () => {
 		it('should save provided user', async () => {
 			const commentAuthor = { name: 'author', email: 'author@mail.com' };
 
-			const res = await addComment({
-				postId,
+			await addComment({
 				text: 'comment',
 				user: commentAuthor
 			});

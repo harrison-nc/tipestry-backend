@@ -105,14 +105,11 @@ function createPost(post, user) {
 schema.statics.create = createPost;
 
 schema.methods.addComment = async function (comment) {
-    let user = {};
+    let { text, user } = comment;
 
-    if (comment.user) user = comment.user;
+    if (!user) user = {};
 
-    const { text } = comment;
-
-    let _id = new ObjectId();
-
+    const _id = new ObjectId();
     const newComment = { _id, text, user };
 
     this.comments.push(newComment);

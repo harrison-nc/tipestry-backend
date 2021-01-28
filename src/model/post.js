@@ -15,24 +15,36 @@ const userSchema = Joi.object({
     email: Joi.string().email().required(),
 }).label('post user');
 
-function validatePostUser(user) {
-    return userSchema.validate(user, {
-        abortEarly: false
-    });
+const commentSchema = Joi.object({
+    postId: Joi.objectId().required(),
+    text: Joi.string().trim().required(),
+    user: Joi.object({
+        name: Joi.string(),
+        email: Joi.string().email(),
+    })
+}).label('comment').required();
+
+function validateComment(input) {
+    return commentSchema.validate(input, { abortEarly: false });
 }
 
-module.exports = function (user, input) {
+function validatePostUser(user) {
+    return userSchema.validate(user, { abortEarly: false });
+}
+
+function validatePost(user, input) {
     const { _id, name, email } = user;
 
-    let result = validatePostUser({
-        _id,
-        name,
-        email,
-    });
+    let result = validatePostUser({ _id, name, email });
 
     if (result.error) return result;
 
-    return schema.validate(input, {
-        abortEarly: false
-    });
+    return schema.validate(input, { abortEarly: false });
 }
+
+
+module.exports = {
+    validate: validatePost,
+    validatePostUser: validatePostUser,
+    validateComment: validateComment,
+};
