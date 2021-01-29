@@ -22,6 +22,29 @@ router.get('/:id', [validatePostId, validatePost], async (req, res) => {
     res.send(post);
 });
 
+
+router.get('/search/:query', async (req, res) => {
+    const query = req.params.query;
+
+    if (!query && query.trim() === '') res.send([]);
+
+    try {
+        const terms = query.split(' ');
+        const postPromises = Promise.all(terms.map(term => findPostMatchingQuery(term)));
+        const matchingPosts = await postPromises;
+        const flattenArray = matchingPosts.flat(100);
+        const sortedPosts = flattenArray.sort((a, b) => b.views - a.views);
+        if (sortedPosts.length < 10) return res.send(sortedPosts);
+        const limit10 = sortedPosts.slice(0, 11);
+        res.send(limit10);
+    }
+    catch (ex) {
+        console.error(ex);
+    }
+
+    res.send([]);
+});
+
 router.post('/', [auth, validateUserAndPost], async (req, res) => {
     const { activeUser, body } = req;
 
@@ -80,6 +103,12 @@ router.post('/:id/comments', [auth, validatePostId, validatePost, validateCommen
         res.status(500).send();
     }
 });
+
+const findPostMatchingQuery = async (query) => {
+    const regex = new RegExp(query, 'i');
+    const post = await Post.find({ title: { $regex: regex } });
+    return post;
+}
 
 module.exports = router;
 
