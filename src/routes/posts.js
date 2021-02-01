@@ -1,15 +1,29 @@
 const auth = require('../middleware/auth')({ tokenRequired: false });
 const express = require('express');
+const { paramError } = require('../util/errors');
+const multer = require('multer');
 const Post = require('../db/post');
 const { validate, validateComment } = require('../model/post');
 const validator = require('../middleware/validateReqParameters');
 const validateObjectId = require('../middleware/validateObjectId');
 const validatePost = require('../middleware/validatePost');
 
+const storage = multer.diskStorage({
+    destination: './uploads',
+    filename: function (req, file, cb) {
+        const fileName = `${Date.now()}-${file.originalname}`;
+        req.fileName = fileName;
+        cb(null, fileName);
+    },
+});
+
+const upload = multer({ storage });
+
 const router = express.Router();
 const validateUserAndPost = validator.withUser(validate);
 const validateCommentMiddleware = validator(validateComment);
 const validatePostId = validateObjectId();
+const uploadFile = upload.single('file');
 
 router.get('/', async (req, res) => {
     const posts = await Post.find();
@@ -21,7 +35,6 @@ router.get('/:id', [validatePostId, validatePost], async (req, res) => {
 
     res.send(post);
 });
-
 
 router.get('/search/:query', async (req, res) => {
     const query = req.params.query;
@@ -51,6 +64,32 @@ router.post('/', [auth, validateUserAndPost], async (req, res) => {
     const post = await Post.create(body, activeUser);
 
     res.send(post);
+});
+
+router.post('/uploads', [auth, validateUserAndPost, uploadFile], async (req, res) => {
+    const { activeUser, body } = req;
+
+    try {
+        const { file } = req;
+
+        if (!file) {
+            return res.status(400).send(paramError('file', file, 'Upload file is required'));
+        }
+
+        const post = req.body;
+
+        delete post.file;
+
+        post.resourceUrl = file && file.path;
+
+        const createdPost = await Post.create(body, activeUser);
+
+        res.send(createdPost);
+    }
+    catch (ex) {
+        // todo: delete uploaded file
+        throw ex;
+    }
 });
 
 router.post('/:id/upvotes', [validatePostId, validatePost], async (req, res) => {
