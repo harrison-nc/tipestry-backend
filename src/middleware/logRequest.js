@@ -7,6 +7,7 @@ module.exports = function (req, res, next) {
 	}
 	console.log("Request", req.method, req.url);
 	console.log('Token', req.headers['x-auth-token']);
+	console.log('Content-type', req.headers['content-type']);
 	console.log(req.body);
 	next();
 };
