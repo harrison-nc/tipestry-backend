@@ -1,24 +1,30 @@
 const auth = require('../middleware/auth')({ tokenRequired: false });
 const express = require('express');
-const { paramError } = require('../util/errors');
 const multer = require('multer');
+const path = require('path');
 const Post = require('../db/post');
+const { getID, isValid } = require('../util/objectId');
+const { paramError, internalError } = require('../util/errors');
 const { validate, validateComment } = require('../model/post');
 const validator = require('../middleware/validateReqParameters');
 const validateObjectId = require('../middleware/validateObjectId');
 const validatePost = require('../middleware/validatePost');
 
 const storage = multer.diskStorage({
-    destination: './uploads',
+    destination: './public/images',
     filename: function (req, file, cb) {
-        const fileName = `${Date.now()}-${file.originalname}`;
+        const ext = path.extname(file.originalname);
+        const fileId = getID();
+        const fileName = `${fileId}${ext}`;
+
         req.fileName = fileName;
+        req.fileId = fileId;
+
         cb(null, fileName);
     },
 });
 
 const upload = multer({ storage });
-
 const router = express.Router();
 const validateUserAndPost = validator.withUser(validate);
 const validateCommentMiddleware = validator(validateComment);
@@ -70,17 +76,22 @@ router.post('/uploads', [auth, validateUserAndPost, uploadFile], async (req, res
     const { activeUser, body } = req;
 
     try {
-        const { file } = req;
+        const { file, fileId } = req;
 
         if (!file) {
             return res.status(400).send(paramError('file', file, 'Upload file is required'));
         }
 
+        if (!fileId || !isValid(fileId)) {
+            console.error('fileId is not valid', fileId);
+            res.status(500)
+            return res.send(internalError('The server was unable to save the uploaded file'));
+        }
+
         const post = req.body;
-
         delete post.file;
-
-        post.resourceUrl = file && file.path;
+        post._id = req.fileId;
+        post.resourceUrl = `images/${req.fileName}`;
 
         const createdPost = await Post.create(body, activeUser);
 
