@@ -13,7 +13,7 @@ describe('/api/users', () => {
     };
 
     beforeEach(() => {
-        server = require('../../src/index.js');
+        server = require('../../src/index.server.js');
 
         user = {
             name: 'user',

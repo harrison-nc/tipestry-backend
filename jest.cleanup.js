@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const server = require('./src/index');
+const server = require('./src/index.server');
 
 console.log('cleaning up environment');
 

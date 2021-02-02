@@ -15,7 +15,7 @@ describe('Test Post Comment', () => {
 	};
 
 	beforeEach(async () => {
-		server = require('../../src/index');
+		server = require('../../src/index.server');
 		postId = new ObjectId().toHexString();
 
 		const user = new User({
