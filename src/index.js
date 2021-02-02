@@ -1,15 +1,4 @@
-const config = require('config');
-const express = require('express');
+const app = require('./app');
+const serverless = require('serverless-http');
 
-const app = express();
-
-require('./startup/error')();
-require('./startup/config')();
-require('./startup/db')();
-require('./startup/validation')();
-require('./startup/routes')(app);
-
-const port = config.get('port');
-const server = app.listen(port, () => console.log(`Connected to localhost:${port}...`));
-
-module.exports = server;
+module.exports.handler = serverless(app);
