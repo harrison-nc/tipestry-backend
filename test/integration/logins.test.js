@@ -6,7 +6,7 @@ describe('/api/logins', () => {
     let server;
 
     beforeEach(() => {
-        server = require('../../src/index.server');
+        server = require('../../src/local/index.server');
     });
 
     afterEach(async () => {

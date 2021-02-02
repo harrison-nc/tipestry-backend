@@ -13,7 +13,7 @@ describe('/api/posts', () => {
     beforeEach(async () => {
         global.debug = false;
 
-        server = require('../../src/index.server');
+        server = require('../../src/local/index.server');
 
         user = new User({
             _id: new ObjectId().toHexString(),
