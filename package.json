@@ -23,7 +23,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest --verbose --setupTestFrameworkScriptFile='<rootDir>/jest.cleanup.js' --testEnvironment node --runInBand"
+    "test": "jest --verbose --setupTestFrameworkScriptFile='<rootDir>/jest.cleanup.js' --testEnvironment node --runInBand",
+    "start": "npm src/index.js"
   },
   "keywords": [
     "nodejs",
