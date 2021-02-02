@@ -13,6 +13,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.11",
     "multer": "^1.4.2",
+    "netlify-lambda": "^2.0.3",
     "serverless-http": "^2.7.0"
   },
   "devDependencies": {
@@ -25,7 +26,8 @@
   },
   "scripts": {
     "test": "jest --verbose --setupTestFrameworkScriptFile='<rootDir>/jest.cleanup.js' --testEnvironment node --runInBand",
-    "start": "npm src/index.js"
+    "start": "npx netlify-lambda serve src",
+    "build": "npx netlify-lambda build src"
   },
   "keywords": [
     "nodejs",

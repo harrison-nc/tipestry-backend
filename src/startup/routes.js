@@ -12,9 +12,9 @@ module.exports = function (app) {
     app.use(express.static('public'));
     app.use(cors());
     app.use(express.json());
-    app.use('/', home);
-    app.use('/api/users', users);
-    app.use('/api/logins', logins);
-    app.use('/api/posts', posts);
+    app.use('/.netlify/functions/', home);
+    app.use('/.netlify/functions/api/users', users);
+    app.use('/.netlify/functions/api/logins', logins);
+    app.use('/.netlify/functions/api/posts', posts);
     app.use(error);
 }
