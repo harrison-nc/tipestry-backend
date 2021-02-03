@@ -5,7 +5,7 @@ publish = "dist/"
 tipestry_db = "mongodb://localhost/tipestry"
 tipestry_home_api = "/.netlify/functions/tipestry"
 tipestry_jwtPrivateKey = "secret"
-tipestry_logRequest = "false"
+tipestry_logRequest = false
 tipestry_logins_api = "/.netlify/functions/tipestry/logins"
 tipestry_posts_api = "/.netlify/functions/tipestry/posts"
 tipestry_users_api = "/.netlify/functions/tipestry/users"
@@ -20,4 +20,4 @@ tipestry_posts_api = "/.netlify/functions/tipestry/posts"
 tipestry_users_api = "/.netlify/functions/tipestry/users"
 
 [dev]
-autoLaunch = "false"
+autoLaunch = false
