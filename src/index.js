@@ -1,4 +1,7 @@
 const app = require('./app');
-const serverless = require('serverless-http');
+const config = require('config');
 
-module.exports.handler = serverless(app);
+const port = config.get('port');
+const server = app.listen(port, () => console.log(`Connected to localhost:${port}...`));
+
+module.exports = server;

@@ -1,12 +1,15 @@
+const config = require('config');
 const request = require('supertest');
 const ObjectId = require('mongoose').Types.ObjectId;
 const User = require('../../src/db/user');
 
-describe('/api/logins', () => {
+const api = config.get('api_login');
+
+describe(`${api}`, () => {
     let server;
 
     beforeEach(() => {
-        server = require('../../src/local/index.server');
+        server = require('../../src/index');
     });
 
     afterEach(async () => {
@@ -28,7 +31,7 @@ describe('/api/logins', () => {
 
         const login = (user) => {
             return request(server)
-                .post('/api/logins')
+                .post(`${api}`)
                 .send(user);
         };
 

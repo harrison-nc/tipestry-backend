@@ -1,3 +1,4 @@
+const config = require('config');
 const auth = require('../middleware/auth')({ tokenRequired: false });
 const express = require('express');
 const multer = require('multer');
@@ -10,8 +11,11 @@ const validator = require('../middleware/validateReqParameters');
 const validateObjectId = require('../middleware/validateObjectId');
 const validatePost = require('../middleware/validatePost');
 
+const publicDir = config.get('public_dir');
+const imagesDir = 'images';
+
 const storage = multer.diskStorage({
-    destination: './public/images',
+    destination: `${publicDir}/${imagesDir}`,
     filename: function (req, file, cb) {
         const ext = path.extname(file.originalname);
         const fileId = getID();
@@ -91,7 +95,7 @@ router.post('/uploads', [auth, validateUserAndPost, uploadFile], async (req, res
         const post = req.body;
         delete post.file;
         post._id = req.fileId;
-        post.resourceUrl = `images/${req.fileName}`;
+        post.resourceUrl = `${imagesDir}/${req.fileName}`;
 
         const createdPost = await Post.create(body, activeUser);
 

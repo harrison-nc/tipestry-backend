@@ -2,5 +2,9 @@
     "port": "PORT",
     "db": "tipestry_db",
     "jwtPrivateKey": "tipestry_jwtPrivateKey",
-    "logRequest": "tipestry_logRequest"
+    "logRequest": "tipestry_logRequest",
+    "api_post": "tipestry_posts_api",
+    "api_login": "tipestry_logins_api",
+    "api_user": "tipestry_users_api",
+    "api_home": "tipestry_home_api"
 }

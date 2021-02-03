@@ -1,19 +1,22 @@
+const config = require('config');
 const User = require('../../src/db/user');
 const ObjectId = require('mongoose').Types.ObjectId;
 const request = require('supertest');
 
-describe('/api/users', () => {
+const api = config.get('api_user');
+
+describe(`${api}`, () => {
     let server;
     let user;
 
     const createUser = (value) => {
         return request(server)
-            .post('/api/users')
+            .post(api)
             .send(value);
     };
 
     beforeEach(() => {
-        server = require('../../src/local/index.server.js');
+        server = require('../../src/index.js');
 
         user = {
             name: 'user',

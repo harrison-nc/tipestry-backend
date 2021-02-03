@@ -1,9 +1,12 @@
+const config = require('config');
 const request = require('supertest');
 const ObjectId = require('mongoose').Types.ObjectId;
 const User = require('../../src/db/user');
 const Post = require('../../src/db/post');
 
-describe('/api/posts', () => {
+const api = config.get('api_post');
+
+describe(`${api}`, () => {
     let server;
     let token;
     let user;
@@ -13,7 +16,7 @@ describe('/api/posts', () => {
     beforeEach(async () => {
         global.debug = false;
 
-        server = require('../../src/local/index.server');
+        server = require('../../src/index');
 
         user = new User({
             _id: new ObjectId().toHexString(),
@@ -46,7 +49,7 @@ describe('/api/posts', () => {
 
     describe('GET /api/posts', () => {
         const getAllPost = (param = '') => {
-            return request(server).get('/api/posts/' + param);
+            return request(server).get(`${api}/${param}`);
         };
 
         it('should return 200', async () => {
@@ -96,7 +99,7 @@ describe('/api/posts', () => {
     describe('POST /api/posts', () => {
         const createPost = (data, header, value) => {
             return request(server)
-                .post('/api/posts')
+                .post(api)
                 .set(header, value)
                 .send(data);
         };
@@ -169,7 +172,7 @@ describe('/api/posts', () => {
 
         const updateVotes = (id, votes) => {
             return request(server)
-                .post(`/api/posts/${id}/${endPoint}`)
+                .post(`${api}/${id}/${endPoint}`)
                 .send(votes);
         }
 
@@ -268,7 +271,7 @@ describe('/api/posts', () => {
 
         const getPostComments = (id) => {
             return request(server)
-                .get(`/api/posts/${id}/comments`);
+                .get(`${api}/${id}/comments`);
         };
 
         it('should return 400 if post id is invalid', async () => {

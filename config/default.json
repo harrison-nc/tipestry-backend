@@ -1,5 +1,10 @@
 {
     "port": 3000,
     "db": "mongodb://localhost/tipestry",
-    "logRequest": false
+    "logRequest": false,
+    "api_post": "/api/posts",
+    "api_login": "/api/logins",
+    "api_user": "/api/users",
+    "api_home": "/",
+    "public_dir": "/uploads"
 }

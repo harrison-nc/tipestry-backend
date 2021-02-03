@@ -1,21 +1,24 @@
+const config = require('config');
 const ObjectId = require('mongoose').Types.ObjectId;
 const Post = require('../../src/db/post');
 const User = require('../../src/db/user');
 const request = require('supertest');
 
-describe('Test Post Comment', () => {
+const api = config.get('api_post');
+
+describe(`Comment at ${api}`, () => {
 	let server;
 	let postId;
 
 	const addComment = (comment) => {
 		comment.postId = postId;
 		return request(server)
-			.post(`/api/posts/${postId}/comments`)
+			.post(`${api}/${postId}/comments`)
 			.send(comment);
 	};
 
 	beforeEach(async () => {
-		server = require('../../src/local/index.server');
+		server = require('../../src/index');
 		postId = new ObjectId().toHexString();
 
 		const user = new User({
