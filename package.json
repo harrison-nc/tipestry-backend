@@ -17,6 +17,7 @@
     "serverless-http": "^2.7.0"
   },
   "devDependencies": {
+    "aws-sdk": "^2.834.0",
     "esformatter": "^0.11.3",
     "jest": "^26.6.3",
     "supertest": "^6.0.1"
@@ -25,9 +26,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest --verbose --setupTestFrameworkScriptFile='<rootDir>/jest.cleanup.js' --testEnvironment node --runInBand",
-    "start": "npx netlify-lambda serve src",
-    "build": "npx netlify-lambda build src"
+    "build": "netlify-lambda build src/functions",
+    "postinstall": "netlify-lambda install src/functions",
+    "test": "echo \"no test defined\""
   },
   "keywords": [
     "nodejs",

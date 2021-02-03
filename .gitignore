@@ -3,5 +3,8 @@
 node_modules/
 coverage/
 uploads/
-public/
 functions/
+!src/functions/
+
+# Local Netlify folder
+.netlify
