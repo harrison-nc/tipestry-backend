@@ -2,7 +2,7 @@
   "name": "tipestry-home",
   "version": "1.0.0",
   "description": "A simple project",
-  "main": "src/index.js",
+  "main": "src/functions/index.js",
   "dependencies": {
     "bcrypt": "^5.0.0",
     "config": "^3.3.3",
